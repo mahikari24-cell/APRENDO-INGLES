@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16834b">
+<title>APRENDE IDIOMAS</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #eaf3ec;
+  color: #263b2c;
+}
+
+.app {
+  max-width: 430px;
+  min-height: 100vh;
+  margin: auto;
+  background: white;
+  padding-bottom: 85px;
+}
+
+header {
+  background: #16834b;
+  color: white;
+  padding: 28px 20px;
+  border-radius: 0 0 25px 25px;
+}
+
+header h1 { font-size: 25px; }
+header p { margin-top: 10px; color: #dcf5e4; }
+
+main { padding: 20px; }
+
+h2 {
+  color: #16834b;
+  margin-bottom: 15px;
+}
+
+p { line-height: 1.5; }
+
+.languages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin: 20px 0;
+}
+
+.language {
+  background: #e8f5eb;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  padding: 14px 3px;
+  text-align: center;
+  cursor: pointer;
+  color: #16834b;
+  font-weight: bold;
+}
+
+.language.active {
+  border-color: #16834b;
+  background: #d2f0db;
+}
+
+.flag {
+  display: block;
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.card {
+  background: #f1f8f2;
+  padding: 20px;
+  border-radius: 18px;
+  margin: 18px 0;
+}
+
+.word {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #16834b;
+  margin: 20px 0;
+}
+
+.translation {
+  text-align: center;
+  font-size: 20px;
+  margin: 12px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  font-size: 15px;
+}
+
+.green {
+  background: #16834b;
+  color: white;
+  width: 100%;
+}
+
+.light {
+  background: #d9efdf;
+  color: #16834b;
+  width: 100%;
+}
+
+button:active { transform: scale(.98); }
+
+.page { display: none; }
+.page.active { display: block; }
+
+.option {
+  background: #e3f2e7;
+  color: #245d38;
+  width: 100%;
+  text-align: left;
+  margin: 7px 0;
+}
+
+.option:disabled { opacity: .7; }
+
+.center { text-align: center; }
+
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 2px;
+  z-index: 10;
+}
+
+nav button {
+  background: white;
+  color: #16834b;
+  font-size: 12px;
+  padding: 8px 5px;
+}
+
+nav button.active {
+  background: #e3f2e7;
+  font-weight: bold;
+}
+
+.progress {
+  height: 13px;
+  background: #dce9df;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 15px 0;
+}
+
+#progressBar {
+  width: 0%;
+  height: 100%;
+  background: #16834b;
+  transition: width .3s;
+}
+
+.small {
+  color: #718078;
+  font-size: 13px;
+}
+
+#feedback {
+  margin: 15px 0;
+  font-weight: bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <h1>🌿 MUNDO IDIOMAS</h1>
+  <p>Aprende, practica y descubre nuevos idiomas.</p>
+</header>
+
+<main>
+
+<!-- PANTALLA INICIO -->
+<section id="home" class="page active">
+
+<h2>¡Bienvenido estudiante! 👋</h2>
+<p>Selecciona el idioma que deseas aprender.</p>
+
+<div class="languages">
+
+<div class="language" onclick="selectLanguage('es',this)">
+<span class="flag">🇪🇸</span>Español
+</div>
+
+<div class="language active" onclick="selectLanguage('en',this)">
+<span class="flag">🇬🇧</span>Inglés
+</div>
+
+<div class="language" onclick="selectLanguage('pt',this)">
+<span class="flag">🇧🇷</span>Portugués
+</div>
+
+</div>
+
+<div class="card">
+<h2>📚 Aprende una palabra</h2>
+
+<div class="word" id="homeWord">HELLO</div>
+
+<div class="translation" id="homeMeaning">Hola</div>
+
+<button class="green" onclick="speakCurrent()">
+🔊 Escuchar pronunciación
+</button>
+
+<br><br>
+
+<button class="light" onclick="nextWord()">
+Siguiente palabra ➜
+</button>
+</div>
+
+<div class="card center">
+<h2>🎯 Mi aprendizaje</h2>
+<h1 id="homePoints">0 puntos</h1>
+<p class="small">¡Sigue aprendiendo cada día!</p>
+</div>
+
+</section>
+
+<!-- PANTALLA LECCIONES -->
+<section id="lessons" class="page">
+
+<h2>📖 Mis lecciones</h2>
+<p>Aprende vocabulario en los tres idiomas.</p>
+
+<div class="card">
+
+<div class="word" id="lessonWord">HELLO</div>
+
+<p class="translation" id="lessonEs">Español: Hola</p>
+<p class="translation" id="lessonEn">Inglés: Hello</p>
+<p class="translation" id="lessonPt">Portugués: Olá</p>
+
+<button class="green" onclick="speakCurrent()">
+🔊 Escuchar pronunciación
+</button>
+
+<br><br>
+
+<button class="light" onclick="nextWord()">
+Siguiente lección ➜
+</button>
+
+</div>
+</section>
+
+<!-- PANTALLA JUEGOS -->
+<section id="games" class="page">
+
+<h2>🎮 Juegos educativos</h2>
+
+<div class="card">
+
+<h3 id="question">¿Cómo se dice Hola en inglés?</h3>
+
+<br>
+
+<div id="options"></div>
+
+<p id="feedback"></p>
+
+<button class="green" onclick="newQuestion()">
+Nueva pregunta
+</button>
+
+</div>
+</section>
+
+<!-- PANTALLA PROGRESO -->
+<section id="profile" class="page">
+
+<h2>🏆 Mi progreso</h2>
+
+<div class="card center">
+
+<h1 id="points">0</h1>
+<p>Puntos acumulados</p>
+
+<br>
+
+<h2 id="correct">0</h2>
+<p>Respuestas correctas</p>
+
+<br>
+
+<h2 id="answered">0</h2>
+<p>Preguntas realizadas</p>
+
+<br>
+
+<div class="progress">
+<div id="progressBar"></div>
+</div>
+
+<p id="percent">0% de aciertos</p>
+
+</div>
+
+</section>
+
+</main>
+
+<!-- MENU INFERIOR -->
+<nav>
+
+<button class="active" onclick="showPage('home',this)">
+🏠<br>Inicio
+</button>
+
+<button onclick="showPage('lessons',this)">
+📚<br>Lecciones
+</button>
+
+<button onclick="showPage('games',this)">
+🎮<br>Juegos
+</button>
+
+<button onclick="showPage('profile',this)">
+🏆<br>Progreso
+</button>
+
+</nav>
+
+</div>
+
+<script>
+
+// BASE DE DATOS DE PALABRAS
+
+const words = [
+{es:"Hola",en:"Hello",pt:"Olá"},
+{es:"Gracias",en:"Thank you",pt:"Obrigado"},
+{es:"Buenos días",en:"Good morning",pt:"Bom dia"},
+{es:"Adiós",en:"Goodbye",pt:"Adeus"},
+{es:"Agua",en:"Water",pt:"Água"},
+{es:"Casa",en:"House",pt:"Casa"},
+{es:"Amigo",en:"Friend",pt:"Amigo"},
+{es:"Amor",en:"Love",pt:"Amor"},
+{es:"Libro",en:"Book",pt:"Livro"},
+{es:"Familia",en:"Family",pt:"Família"},
+{es:"Comida",en:"Food",pt:"Comida"},
+{es:"Escuela",en:"School",pt:"Escola"},
+{es:"Perro",en:"Dog",pt:"Cachorro"},
+{es:"Gato",en:"Cat",pt:"Gato"},
+{es:"Sol",en:"Sun",pt:"Sol"},
+{es:"Luna",en:"Moon",pt:"Lua"},
+{es:"Flor",en:"Flower",pt:"Flor"},
+{es:"Feliz",en:"Happy",pt:"Feliz"},
+{es:"Agua fría",en:"Cold water",pt:"Água fria"},
+{es:"Buenas noches",en:"Good night",pt:"Boa noite"}
+];
+
+// VARIABLES
+
+let language = "en";
+let index = 0;
+
+let points = Number(localStorage.getItem("points")) || 0;
+let correct = Number(localStorage.getItem("correct")) || 0;
+let answered = Number(localStorage.getItem("answered")) || 0;
+
+let answer = "";
+let locked = false;
+
+const languageNames = {
+es:"Español",
+en:"Inglés",
+pt:"Portugués"
+};
+
+const voices = {
+es:"es-ES",
+en:"en-US",
+pt:"pt-BR"
+};
+
+// SELECCIONAR IDIOMA
+
+function selectLanguage(lang,element) {
+
+language = lang;
+
+document.querySelectorAll(".language").forEach(el=>{
+el.classList.remove("active");
+});
+
+element.classList.add("active");
+
+displayWord();
+newQuestion();
+
+}
+
+// MOSTRAR PALABRAS
+
+function displayWord() {
+
+let w = words[index];
+
+document.getElementById("homeWord").textContent = w[language];
+
+document.getElementById("homeMeaning").textContent =
+language === "es" ? "Español" : w.es;
+
+document.getElementById("lessonWord").textContent = w[language];
+
+document.getElementById("lessonEs").textContent =
+"Español: " + w.es;
+
+document.getElementById("lessonEn").textContent =
+"Inglés: " + w.en;
+
+document.getElementById("lessonPt").textContent =
+"Portugués: " + w.pt;
+
+}
+
+// SIGUIENTE PALABRA
+
+function nextWord() {
+
+index = (index + 1) % words.length;
+
+displayWord();
+
+}
+
+// PRONUNCIACIÓN
+
+function speakCurrent() {
+
+let speech = new SpeechSynthesisUtterance(
+words[index][language]
+);
+
+speech.lang = voices[language];
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+
+}
+
+// CAMBIAR PANTALLAS
+
+function showPage(id,button) {
+
+document.querySelectorAll(".page").forEach(p=>{
+p.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+document.querySelectorAll("nav button").forEach(b=>{
+b.classList.remove("active");
+});
+
+button.classList.add("active");
+
+if(id === "games") newQuestion();
+
+if(id === "profile") updateProgress();
+
+}
+
+// JUEGO DE PREGUNTAS
+
+function newQuestion() {
+
+locked = false;
+
+let w = words[Math.floor(Math.random()*words.length)];
+
+answer = w[language];
+
+document.getElementById("question").textContent =
+`¿Cómo se dice "${w.es}" en ${languageNames[language]}?`;
+
+let choices = [answer];
+
+while(choices.length < 4) {
+
+let choice = words[
+Math.floor(Math.random()*words.length)
+][language];
+
+if(!choices.includes(choice)) {
+choices.push(choice);
+}
+
+}
+
+choices.sort(()=>Math.random()-0.5);
+
+let box = document.getElementById("options");
+
+box.innerHTML = "";
+
+choices.forEach(choice=>{
+
+let btn = document.createElement("button");
+
+btn.textContent = choice;
+
+btn.className = "option";
+
+btn.onclick = ()=>checkAnswer(choice);
+
+box.appendChild(btn);
+
+});
+
+document.getElementById("feedback").textContent = "";
+
+}
+
+// COMPROBAR RESPUESTAS
+
+function checkAnswer(choice) {
+
+if(locked) return;
+
+locked = true;
+
+answered++;
+
+if(choice === answer) {
+
+correct++;
+
+points += 10;
+
+document.getElementById("feedback").textContent =
+"🎉 ¡Excelente! Respuesta correcta.";
+
+document.getElementById("feedback").style.color = "green";
+
+} else {
+
+document.getElementById("feedback").textContent =
+"❌ Respuesta incorrecta. La respuesta era: " + answer;
+
+document.getElementById("feedback").style.color = "red";
+
+}
+
+document.querySelectorAll(".option").forEach(btn=>{
+btn.disabled = true;
+});
+
+saveProgress();
+
+updateProgress();
+
+}
+
+// GUARDAR PROGRESO
+
+function saveProgress() {
+
+localStorage.setItem("points",points);
+localStorage.setItem("correct",correct);
+localStorage.setItem("answered",answered);
+
+}
+
+// ACTUALIZAR PROGRESO
+
+function updateProgress() {
+
+let percentage = answered > 0 ?
+Math.round(correct/answered*100) : 0;
+
+document.getElementById("points").textContent = points;
+
+document.getElementById("correct").textContent = correct;
+
+document.getElementById("answered").textContent = answered;
+
+document.getElementById("progressBar").style.width =
+percentage + "%";
+
+document.getElementById("percent").textContent =
+percentage + "% de respuestas correctas";
+
+document.getElementById("homePoints").textContent =
+points + " puntos";
+
+}
+
+// INICIAR APLICACIÓN
+
+displayWord();
+newQuestion();
+updateProgress();
+
+</script>
+
+</body>
+</html>
